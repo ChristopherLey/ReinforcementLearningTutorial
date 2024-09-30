@@ -1,0 +1,59 @@
+# Ignore PyCharm specific files
+.idea/
+
+# Ignore Python bytecode files
+__pycache__/
+*.py[cod]
+
+# Ignore virtual environment directories
+venv/
+ENV/
+env/
+.venv/
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore macOS specific files
+.DS_Store
+
+# Ignore Windows specific files
+Thumbs.db
+ehthumbs.db
+
+# Ignore other common files
+*.log
+*.sqlite3
+*.env
+*.bak
+*.swp
+*.swo
+*.tmp
+*.temp
+*.out
+*.pid
+*.gz
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+*.old
+*.orig
+*.rej
+*.sublime-project
+*.sublime-workspace
+*.sublime-settings
+*.sublime-metadata
+*.sublime-package
+*.sublime-snippet
+*.sublime-completions
+*.sublime-syntax
+*.sublime-theme
+*.sublime-keymap
+*.sublime-macro
+*.sublime-menu
+*.sublime-build
+*.sublime-color-scheme
+*.sublime-syntax-test
+*.sublime-syntax-definition
