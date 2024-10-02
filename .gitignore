@@ -11,6 +11,10 @@ ENV/
 env/
 .venv/
 
+# ignore temporary directories
+tmp/
+
+
 # Ignore Jupyter Notebook checkpoints
 .ipynb_checkpoints/
 
