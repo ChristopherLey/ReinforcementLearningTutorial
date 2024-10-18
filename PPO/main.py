@@ -16,16 +16,22 @@ def main():
         help="training mode",
         action="store_true",
     )
+    parser.add_argument(
+        "--environment",
+        "-e",
+        dest="environment",
+        help="set the environment",
+        default="LunarLander-v2",
+    )
     args = parser.parse_args()
-
-    N = 20
+    horizon = 50
     batch_size = 5
     n_epochs = 4
-    alpha = 0.0003
-    n_games = 300
-
+    alpha = 0.001
+    n_games = 400
+    average_span = n_games // 10
     if args.training:
-        env = gym.make("CartPole-v1", max_episode_steps=200)
+        env = gym.make(args.environment, max_episode_steps=200)
 
         agent = Agent(
             n_actions=env.action_space.n,
@@ -34,7 +40,7 @@ def main():
             gamma=0.99,
             n_epochs=n_epochs,
             batch_size=batch_size,
-            horizon=N
+            horizon=horizon
         )
 
         best_score = env.reward_range[0]
@@ -53,30 +59,33 @@ def main():
                 n_steps += 1
                 score += reward
                 agent.remember(observation, action, log_probability, value, reward, is_terminated)
-                if n_steps % N == 0:
+                if n_steps % horizon == 0:
                     agent.learn()
                     learn_iters += 1
                 observation = observation_
             score_history.append(score)
-            avg_score = np.mean(score_history[-100:])
+            if len(score_history) > average_span:
+                avg_score = np.mean(score_history[-average_span:])
 
-            if avg_score > best_score:
-                best_score = avg_score
-                agent.save_models()
+                if avg_score > best_score:
+                    best_score = avg_score
+                    agent.save_models()
 
-            print(f"episode {i}, score {score:.1f}, avg_score {avg_score:.1f}, learn_iters {learn_iters}")
+                print(f"episode {i}, score {score:.1f}, avg_score {avg_score:.1f}, learn_iters {learn_iters}")
+            else:
+                print(f"episode {i}, score {score:.1f}, learn_iters {learn_iters}")
         env.close()
         x = [i+1 for i in range(len(score_history))]
-        filename = "cartpole.png"
+        filename = f"{args.environment}.png"
         plt.plot(x, score_history)
-        plt.title("CartPole-v0")
+        plt.title(args.environment)
         plt.xlabel("Episode")
         plt.ylabel("Score")
         plt.savefig(filename)
         plt.show()
 
     else:
-        env = gym.make("CartPole-v0", render_mode="human")
+        env = gym.make(args.environment, render_mode="human")
 
         agent = Agent(
             n_actions=env.action_space.n,
@@ -85,7 +94,7 @@ def main():
             gamma=0.99,
             n_epochs=n_epochs,
             batch_size=batch_size,
-            horizon=N
+            horizon=horizon
         )
         agent.load_models()
         observation, info = env.reset()
